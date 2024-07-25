@@ -26,7 +26,7 @@ use sp1_sdk::{utils,HashableKey, ProverClient, SP1ProofWithPublicValues, SP1Stdi
 use tokio::sync::oneshot;
 use warp::Filter;
 
-pub const FIBONACCI_ELF: &[u8] = include_bytes!("../../../program/elf/riscv32im-succinct-zkvm-elf");
+pub const FIBONACCI_ELF: &[u8] = include_bytes!("../../../elf/riscv32im-succinct-zkvm-elf");
 
 sol! {
     interface IBonsaiPay {
