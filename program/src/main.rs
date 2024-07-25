@@ -9,27 +9,21 @@
 sp1_zkvm::entrypoint!(main);
 
 use alloy_primitives::{Address, FixedBytes};
-use alloy_sol_types::SolValue;
+use alloy_sol_types::SolType;
+use common::{ProofInputs, ProofOutputs};
 use oidc_validator::IdentityProvider;
-use sha2::{Sha256, Digest};
-use
-
+use sha2::{Digest, Sha256};
 fn main() {
-    let mut input_bytes = sp1_zkvm::io::read_vec();
-    let input: Input = <Input>::abi_decode(&input_bytes, true).unwrap();
+    let mut inputs: ProofInputs = sp1_zkvm::io::read();
 
-    let identity_provider: IdentityProvider = input.identity_provider.into();
-    let jwt: String = input.jwt;
+    let identity_provider: IdentityProvider = inputs.identity_provider.into();
+    let jwt: String = inputs.jwt;
 
     let (claim_id, msg_sender) = identity_provider.validate(&jwt).unwrap();
     let msg_sender: Address = Address::parse_checksummed(msg_sender, None).unwrap();
     let claim_id: FixedBytes<32> =
         FixedBytes::from_slice(Sha256::digest(claim_id.as_bytes()).as_slice());
-    let output = ClaimsData {
-        msg_sender,
-        claim_id,
-    };
-    let output = output.abi_encode();
+    let output = ProofOutputs::abi_encode(&(msg_sender, claim_id));
 
     sp1_zkvm::io::commit_slice(&output);
 }

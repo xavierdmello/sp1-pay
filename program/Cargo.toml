@@ -9,3 +9,4 @@ alloy-sol-types = {workspace = true}
 sha2 = {workspace = true}
 sp1-zkvm = {workspace = true}
 oidc-validator = {workspace = true}
+common = {workspace = true}

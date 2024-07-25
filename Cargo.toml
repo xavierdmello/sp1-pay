@@ -19,7 +19,7 @@ serde_cbor = "0.11.2"
 hex = "0.4.3"
 serde_json = "1.0.11"
 serde_with = { version = "3.4.0", features = ["hex"] }
-alloy-primitives = { version = "0.7.7" }
+alloy-primitives = { version = "0.7.7", features=["serde"]}
 clap = "4.5.9"
 log = "0.4.22"
 env_logger = "0.11.3"
@@ -34,8 +34,8 @@ warp = "0.3.6"
 oidc-validator = { path = "./oidc-validator" }
 sha2 = "0.10.8"
 sp1-zkvm = { git = "https://github.com/succinctlabs/sp1.git", tag = "v1.0.1" }
+common = { path = "./common" }
 
 [patch.crates-io]
-sha2-v0-9-9 = { git = "https://github.com/sp1-patches/RustCrypto-hashes", package = "sha2", branch = "patch-sha2-v0.9.9" }
 sha2-v0-10-8 = { git = "https://github.com/sp1-patches/RustCrypto-hashes", package = "sha2", branch = "patch-sha2-v0.10.8" }
 tiny-keccak = { git = "https://github.com/sp1-patches/tiny-keccak", branch = "patch-v2.0.2" }
