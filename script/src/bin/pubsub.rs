@@ -13,8 +13,7 @@
 // limitations under the License.
 
 use alloy_primitives::{FixedBytes, U256};
-use alloy_sol_types::{sol, SolInterface, SolValue};
-use anyhow::Context;
+use alloy_sol_types::{sol, SolInterface, SolValue, SolType};
 use clap::Parser;
 use fibonacci_script::TxSender;
 use log::info;
@@ -28,17 +27,18 @@ sol! {
     interface IBonsaiPay {
         function claim(address payable to, bytes32 claim_id, bytes32 post_state_digest, bytes calldata seal);
     }
-
-    struct ClaimsData {
-        address msg_sender;
-        bytes32 claim_id;
-    }
 }
 
 // uint256 identity_provider
 // string jwt
 type InputTuple = sol! {
     tuple(uint256, string)
+};
+
+// address msg_sender
+// bytes32 claim_id
+type ClaimsData = sol! {
+    tuple(address, bytes32)
 };
 
 /// Arguments of the publisher CLI.
@@ -95,9 +95,6 @@ fn prove_and_send_transaction(
     // Setup the logger.
     sp1_sdk::utils::setup_logger();
 
-    // Parse the command line arguments.
-    let args = ProveArgs::parse();
-
     // Setup the prover client.
     let client = ProverClient::new();
 
@@ -107,10 +104,7 @@ fn prove_and_send_transaction(
     // Setup the inputs.
     let mut stdin = SP1Stdin::new();
 
-    let input = Input {
-        identity_provider: U256::ZERO, // Google as the identity provider
-        jwt: token,
-    };
+    let input = InputTuple::abi_encode(&(U256::ZERO, token));
 
     stdin.write_slice(&input.abi_encode());
     // Generate the proof.
@@ -121,8 +115,6 @@ fn prove_and_send_transaction(
         .expect("failed to generate proof");
     create_plonk_fixture(&proof, &vk);
 
-    let seal_clone = seal.clone();
-
     let tx_sender = TxSender::new(
         args.chain_id,
         &args.rpc_url,
@@ -131,7 +123,7 @@ fn prove_and_send_transaction(
     )
     .expect("failed to create tx sender");
 
-    let claims = ClaimsData::abi_decode(&journal, true)
+    let claims = ClaimsData::abi_decode(&proof.public_values, true)
         .context("decoding journal data")
         .expect("failed to decode");
 

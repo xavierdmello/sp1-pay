@@ -12,17 +12,7 @@ use alloy_primitives::{Address, FixedBytes};
 use alloy_sol_types::SolValue;
 use oidc_validator::IdentityProvider;
 use sha2::{Sha256, Digest};
-
-alloy_sol_types::sol! {
-    struct ClaimsData {
-        address msg_sender;
-        bytes32 claim_id;
-    }
-    struct Input {
-        uint256 identity_provider;
-        string jwt;
-    }
-}
+use
 
 fn main() {
     let mut input_bytes = sp1_zkvm::io::read_vec();
