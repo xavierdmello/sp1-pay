@@ -22,6 +22,12 @@ tracing = "0.1.40"
 alloy-sol-types = "0.7.2"
 hex = "0.4.3"
 dotenv = "0.15.0"
+alloy-primitives = "0.7.7"
+anyhow = "1.0.86"
+log = "0.4.22"
+tokio = "1.39.1"
+warp = "0.3.7"
+ethers = "2.0.14"
 
 
 [build-dependencies]
