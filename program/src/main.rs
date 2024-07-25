@@ -14,7 +14,7 @@ use common::{ProofInputs, ProofOutputs};
 use oidc_validator::IdentityProvider;
 use sha2::{Digest, Sha256};
 fn main() {
-    let mut inputs: ProofInputs = sp1_zkvm::io::read();
+    let inputs: ProofInputs = sp1_zkvm::io::read();
 
     let identity_provider: IdentityProvider = inputs.identity_provider.into();
     let jwt: String = inputs.jwt;

@@ -12,21 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use alloy_primitives::{FixedBytes, U256};
-use alloy_sol_types::{sol, SolInterface, SolValue, SolType};
+use std::path::PathBuf;
+
+use alloy_primitives::{Address, Bytes, FixedBytes, B256, U256};
+use alloy_sol_types::{sol, SolInterface, SolType, SolValue};
+use anyhow::Context;
 use clap::Parser;
-use sp1_pay_script::TxSender;
 use common::{ProofInputs, ProofOutputs};
-use log::info;  
-use sp1_sdk::{HashableKey, ProverClient, SP1ProofWithPublicValues, SP1Stdin, SP1VerifyingKey};
+use log::info;
+use serde::{Deserialize, Serialize};
+use sp1_pay_script::TxSender;
+use sp1_sdk::{utils,HashableKey, ProverClient, SP1ProofWithPublicValues, SP1Stdin, SP1VerifyingKey};
 use tokio::sync::oneshot;
 use warp::Filter;
-use serde::{Deserialize, Serialize};
+
 pub const FIBONACCI_ELF: &[u8] = include_bytes!("../../../program/elf/riscv32im-succinct-zkvm-elf");
 
 sol! {
     interface IBonsaiPay {
-        function claim();
+        function claim(bytes calldata proof, bytes calldata public_values);
     }
 }
 
@@ -74,11 +78,7 @@ async fn handle_jwt_authentication(token: String) -> Result<(), warp::Rejection>
     }
 }
 
-fn prove_and_send_transaction(
-    args: Args,
-    token: String,
-    tx: oneshot::Sender<(Vec<u8>, FixedBytes<32>, Vec<u8>)>,
-) {
+fn prove_and_send_transaction(args: Args, token: String, tx: oneshot::Sender<(Vec<u8>, Vec<u8>)>) {
     dotenv::dotenv().ok();
 
     // Setup the logger.
@@ -97,7 +97,7 @@ fn prove_and_send_transaction(
         identity_provider: U256::ZERO,
         jwt: token,
     };
-    stdin.write(inputs);
+    stdin.write(&inputs);
 
     // Generate the proof.
     let proof = client
@@ -115,17 +115,17 @@ fn prove_and_send_transaction(
     )
     .expect("failed to create tx sender");
 
-    let claims = ProofOutputs::abi_decode(&proof.public_values, true)
+    let claims = ProofOutputs::abi_decode(&proof.public_values.to_vec(), true)
         .context("decoding journal data")
         .expect("failed to decode");
 
-    info!("Claim ID: {:?}", claims.claim_id);
-    info!("Msg Sender: {:?}", claims.msg_sender);
+    info!("Claim ID: {:?}", claims.0);
+    info!("Msg Sender: {:?}", claims.1);
 
     let calldata = IBonsaiPay::IBonsaiPayCalls::claim(IBonsaiPay::claimCall {
-        to: claims.msg_sender,
-        claim_id: claims.claim_id,
-    })
+        proof: Bytes::from(proof.bytes()),
+        public_values: Bytes::from(proof.public_values.to_vec()),
+    })  
     .abi_encode();
 
     // Send the calldata to Ethereum.
@@ -134,7 +134,7 @@ fn prove_and_send_transaction(
         .block_on(tx_sender.send(calldata))
         .expect("failed to send tx");
 
-    tx.send((journal, post_state_digest, seal))
+    tx.send((proof.bytes(), proof.public_values.to_vec()))
         .expect("failed to send over channel");
 }
 
@@ -161,21 +161,17 @@ fn auth_filter() -> impl Filter<Extract = impl warp::Reply, Error = warp::Reject
 
 #[tokio::main]
 async fn main() {
-    env_logger::init();
-
     let api = auth_filter();
 
     warp::serve(api).run(([127, 0, 0, 1], 8080)).await;
 }
 
-
 /// A fixture that can be used to test the verification of SP1 zkVM proofs inside Solidity.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct SP1FibonacciProofFixture {
-    a: u32,
-    b: u32,
-    n: u32,
+    msg_sender: Address,
+    claim_id: B256,
     vkey: String,
     public_values: String,
     proof: String,
@@ -185,13 +181,13 @@ struct SP1FibonacciProofFixture {
 fn create_plonk_fixture(proof: &SP1ProofWithPublicValues, vk: &SP1VerifyingKey) {
     // Deserialize the public values.
     let bytes = proof.public_values.as_slice();
-    let (n, a, b) = PublicValuesTuple::abi_decode(bytes, false).unwrap();
+    let (msg_sender, claim_id) = ProofOutputs::abi_decode(bytes, false).unwrap();
 
+    // Create the testing fixture so we can test things end-to-end.
     // Create the testing fixture so we can test things end-ot-end.
     let fixture = SP1FibonacciProofFixture {
-        a,
-        b,
-        n,
+        msg_sender,
+        claim_id,
         vkey: vk.bytes32().to_string(),
         public_values: format!("0x{}", hex::encode(bytes)),
         proof: format!("0x{}", hex::encode(proof.bytes())),

@@ -16,7 +16,6 @@
 pragma solidity ^0.8.20;
 
 import {ISP1Verifier} from "@sp1-contracts/ISP1Verifier.sol";
-import {ImageID} from "./ImageID.sol";
 
 contract BonsaiPay {
     ISP1Verifier public immutable verifier;

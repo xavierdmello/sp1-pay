@@ -1,5 +1,5 @@
-use alloy_primitives::{FixedBytes, U256};
-use alloy_sol_types::{sol, SolInterface, SolType, SolValue};
+use alloy_primitives::U256;
+use alloy_sol_types::sol;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
