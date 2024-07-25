@@ -8,38 +8,38 @@
 #![no_main]
 sp1_zkvm::entrypoint!(main);
 
-use alloy_sol_types::{sol, SolType};
+use alloy_primitives::{Address, FixedBytes};
+use alloy_sol_types::SolValue;
+use oidc_validator::IdentityProvider;
+use sha2::{Sha256, Digest};
 
-/// The public values encoded as a tuple that can be easily deserialized inside Solidity.
-type PublicValuesTuple = sol! {
-    tuple(uint32, uint32, uint32)
-};
-
-pub fn main() {
-    // Read an input to the program.
-    //
-    // Behind the scenes, this compiles down to a custom system call which handles reading inputs
-    // from the prover.
-    let n = sp1_zkvm::io::read::<u32>();
-
-    if n > 186 {
-        panic!(
-            "This fibonacci program doesn't support n > 186, as it would overflow a 32-bit integer."
-        );
+alloy_sol_types::sol! {
+    struct ClaimsData {
+        address msg_sender;
+        bytes32 claim_id;
     }
-
-    // Compute the n'th fibonacci number, using normal Rust code.
-    let mut a = 0u32;
-    let mut b = 1u32;
-    for _ in 0..n {
-        let c = a + b;
-        a = b;
-        b = c;
+    struct Input {
+        uint256 identity_provider;
+        string jwt;
     }
+}
 
-    // Encocde the public values of the program.
-    let bytes = PublicValuesTuple::abi_encode(&(n, a, b));
+fn main() {
+    let mut input_bytes = sp1_zkvm::io::read_vec();
+    let input: Input = <Input>::abi_decode(&input_bytes, true).unwrap();
 
-    // Commit to the public values of the program.
-    sp1_zkvm::io::commit_slice(&bytes);
+    let identity_provider: IdentityProvider = input.identity_provider.into();
+    let jwt: String = input.jwt;
+
+    let (claim_id, msg_sender) = identity_provider.validate(&jwt).unwrap();
+    let msg_sender: Address = Address::parse_checksummed(msg_sender, None).unwrap();
+    let claim_id: FixedBytes<32> =
+        FixedBytes::from_slice(Sha256::digest(claim_id.as_bytes()).as_slice());
+    let output = ClaimsData {
+        msg_sender,
+        claim_id,
+    };
+    let output = output.abi_encode();
+
+    sp1_zkvm::io::commit_slice(&output);
 }

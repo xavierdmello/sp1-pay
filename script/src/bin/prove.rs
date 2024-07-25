@@ -36,6 +36,8 @@ type PublicValuesTuple = sol! {
 };
 
 fn main() {
+    dotenv::dotenv().ok();
+
     // Setup the logger.
     sp1_sdk::utils::setup_logger();
 
