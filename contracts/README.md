@@ -1,61 +1,32 @@
-# SP1 Project Template Contracts
+# Solidity Contracts
 
-This is a template for writing a contract that uses verification of [SP1](https://github.com/succinctlabs/sp1) PlonK proofs onchain using the [SP1VerifierGateway](https://github.com/succinctlabs/sp1-contracts/blob/main/contracts/src/SP1VerifierGateway.sol).
+This directory contains the Solidity contracts for an application with [RISC Zero](https://risczero.com) on Ethereum.
 
-## Requirements
+The main contract is [`BonsaiPay.sol`](./BonsaiPay.sol), which allows users to deposit funds associated with a claim ID and for recipients to claim those funds by providing a valid proof.
 
-- [Foundry](https://book.getfoundry.sh/getting-started/installation)
+The Solidity libraries for RISC Zero can be found at [github.com/risc0/risc0-ethereum](https://github.com/risc0/risc0-ethereum/tree/main/contracts).
 
-## Test
+Contracts are built and tested with [forge](https://github.com/foundry-rs/foundry#forge), which is part of the [Foundry](https://getfoundry.sh/) toolkit.
 
-```sh
-forge test -v
-```
+Tests are defined in the `tests` directory in the root of this template.
 
-## Deployment
+## BonsaiPay Contract
 
-#### Step 1: Set the `VERIFIER` environment variable
+The `BonsaiPay` contract has the following main functions:
 
-Find the address of the `verifer` to use from the [deployments](https://github.com/succinctlabs/sp1-contracts/tree/main/contracts/deployments) list for the chain you are deploying to. Set it to the `VERIFIER` environment variable, for example:
+- `deposit(bytes32 claimId)`: Allows users to deposit funds associated with a `claimId`. Emits a `Deposited` event.
+- `claim(address payable to, bytes32 claimId, bytes32 postStateDigest, bytes calldata seal)`: Allows recipients to claim funds associated with a `claimId` by providing a valid proof. Emits a `Claimed` event.
+- `balanceOf(bytes32 claimId)`: Returns the claimable balance for a given `claimId`.
 
-```sh
-VERIFIER=0x3B6041173B80E77f038f3F2C0f9744f04837185e
-```
+The contract uses the RISC Zero verifier to validate the proof provided during the claim process. The `ImageID` used for verification is generated during the build process.
 
-Note: you can use either the [SP1VerifierGateway](https://github.com/succinctlabs/sp1-contracts/blob/main/contracts/src/SP1VerifierGateway.sol) or a specific version, but it is highly recommended to use the gateway as this will allow you to use different versions of SP1.
+## Generated Contracts
 
-#### Step 2: Set the `PROGRAM_VKEY` environment variable
+As part of the build process, this template generates the `ImageID.sol` and `Elf.sol` contracts.
 
-Find your program verification key by going into the `../script` directory and running `RUST_LOG=info cargo run --package fibonacci-script --bin vkey --release`, which will print an output like:
+Running `cargo build` will generate these contracts with up to date references to your guest code.
 
-> Program Verification Key: 0x00620892344c310c32a74bf0807a5c043964264e4f37c96a10ad12b5c9214e0e
+- `ImageID.sol`: contains the [Image IDs](https://dev.risczero.com/terminology#image-id) for the guests implemented in the [methods](../methods/README.md) directory.
+- `Elf.sol`: contains the path of the guest binaries implemented in the [methods](../methods/README.md) directory.
 
-Then set the `PROGRAM_VKEY` environment variable to the output of that command, for example:
-
-```sh
-PROGRAM_VKEY=0x00620892344c310c32a74bf0807a5c043964264e4f37c96a10ad12b5c9214e0e
-```
-
-#### Step 3: Deploy the contract
-
-Fill out the rest of the details needed for deployment:
-
-```sh
-RPC_URL=...
-```
-
-```sh
-PRIVATE_KEY=...
-```
-
-Then deploy the contract to the chain:
-
-```sh
-forge create src/Fibonacci.sol:Fibonacci --rpc-url $RPC_URL --private-key $PRIVATE_KEY --constructor-args $VERIFIER $PROGRAM_VKEY
-```
-
-It can also be a good idea to verify the contract when you deploy, in which case you would also need to set `ETHERSCAN_API_KEY`:
-
-```sh
-forge create src/Fibonacci.sol:Fibonacci --rpc-url $RPC_URL --private-key $PRIVATE_KEY --constructor-args $VERIFIER $PROGRAM_VKEY --verify --verifier etherscan --etherscan-api-key $ETHERSCAN_API_KEY
-```
+This contract is saved in the `tests` directory in the root of this template.
