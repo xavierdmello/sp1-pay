@@ -36,7 +36,7 @@ struct Extra {
     key_id: String,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub enum IdentityProvider {
     Google,
     Test,
