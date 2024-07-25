@@ -30,7 +30,7 @@ pub const FIBONACCI_ELF: &[u8] = include_bytes!("../../../elf/riscv32im-succinct
 
 sol! {
     interface IBonsaiPay {
-        function claim(bytes calldata proof, bytes calldata public_values);
+        function claim(bytes calldata proof, bytes calldata publicValues);
     }
 }
 
@@ -124,7 +124,7 @@ fn prove_and_send_transaction(args: Args, token: String, tx: oneshot::Sender<(Ve
 
     let calldata = IBonsaiPay::IBonsaiPayCalls::claim(IBonsaiPay::claimCall {
         proof: Bytes::from(proof.bytes()),
-        public_values: Bytes::from(proof.public_values.to_vec()),
+        publicValues: Bytes::from(proof.public_values.to_vec()),
     })  
     .abi_encode();
 
