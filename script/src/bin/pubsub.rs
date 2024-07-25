@@ -26,7 +26,7 @@ pub const FIBONACCI_ELF: &[u8] = include_bytes!("../../../program/elf/riscv32im-
 
 sol! {
     interface IBonsaiPay {
-        function claim(address payable to, bytes32 claim_id, bytes32 post_state_digest, bytes calldata seal);
+        function claim();
     }
 }
 
@@ -125,8 +125,6 @@ fn prove_and_send_transaction(
     let calldata = IBonsaiPay::IBonsaiPayCalls::claim(IBonsaiPay::claimCall {
         to: claims.msg_sender,
         claim_id: claims.claim_id,
-        post_state_digest,
-        seal: seal_clone,
     })
     .abi_encode();
 

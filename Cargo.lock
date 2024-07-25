@@ -5151,6 +5151,7 @@ dependencies = [
  "alloy-sol-types",
  "anyhow",
  "clap",
+ "common",
  "dotenv",
  "ethers",
  "hex",
