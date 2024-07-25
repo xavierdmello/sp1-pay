@@ -1,7 +1,8 @@
+[workspace]
 [package]
 name = "oidc-validator"
-version = { workspace = true }
-edition = { workspace = true }
+version = "0.1.0"
+edition = "2021"
 
 [dependencies]
 jwt-compact = { version = "0.7", default-features = false, features = ["rsa"] }
