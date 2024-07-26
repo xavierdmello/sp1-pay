@@ -47,6 +47,8 @@ impl IdentityProvider {
         match self {
             Self::Google => {
                 let decoded = decode_token::<GoogleClaims>(token, &GOOGLE_KEYS).unwrap();
+                println!("Decoded email: {}", decoded.email);
+                println!("Decoded nonce: {}", decoded.nonce);
                 Ok((decoded.email.to_string(), decoded.nonce))
             }
             Self::Test => {
@@ -136,13 +138,13 @@ where
             .map_err(|_| OidcErr::CertificateParseError)?,
         _ => return Err(OidcErr::AlgorithmNotFoundError),
     };
-
+    println!("cycle-tracker-start: validate integrity");
     // Validate the token integrity.
     // NOTE: This does not verify the `exp` field.
     let res = alg
         .validate_integrity::<T>(&token, &vkey)
         .map_err(|_| OidcErr::TokenValidationError);
-
+    println!("cycle-tracker-end: validate integrity");
     Ok(res.unwrap().claims().custom.clone())
 }
 

@@ -9,12 +9,12 @@ import {
   UsePrepareContractWriteConfig,
   useContractEvent,
   UseContractEventConfig,
-} from 'wagmi'
+} from "wagmi";
 import {
   ReadContractResult,
   WriteContractMode,
   PrepareWriteContractResult,
-} from 'wagmi/actions'
+} from "wagmi/actions";
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // BonsaiPay
@@ -25,120 +25,120 @@ import {
  */
 export const bonsaiPayABI = [
   {
-    stateMutability: 'nonpayable',
-    type: 'constructor',
+    stateMutability: "nonpayable",
+    type: "constructor",
     inputs: [
       {
-        name: '_verifier',
-        internalType: 'contract IRiscZeroVerifier',
-        type: 'address',
+        name: "_verifier",
+        internalType: "contract IRiscZeroVerifier",
+        type: "address",
       },
     ],
   },
   {
-    type: 'error',
-    inputs: [{ name: 'message', internalType: 'string', type: 'string' }],
-    name: 'InvalidClaim',
+    type: "error",
+    inputs: [{ name: "message", internalType: "string", type: "string" }],
+    name: "InvalidClaim",
   },
   {
-    type: 'error',
-    inputs: [{ name: 'message', internalType: 'string', type: 'string' }],
-    name: 'InvalidDeposit',
+    type: "error",
+    inputs: [{ name: "message", internalType: "string", type: "string" }],
+    name: "InvalidDeposit",
   },
-  { type: 'error', inputs: [], name: 'TransferFailed' },
+  { type: "error", inputs: [], name: "TransferFailed" },
   {
-    type: 'event',
+    type: "event",
     anonymous: false,
     inputs: [
       {
-        name: 'recipient',
-        internalType: 'address',
-        type: 'address',
+        name: "recipient",
+        internalType: "address",
+        type: "address",
         indexed: true,
       },
       {
-        name: 'claimId',
-        internalType: 'bytes32',
-        type: 'bytes32',
+        name: "claimId",
+        internalType: "bytes32",
+        type: "bytes32",
         indexed: true,
       },
       {
-        name: 'amount',
-        internalType: 'uint256',
-        type: 'uint256',
+        name: "amount",
+        internalType: "uint256",
+        type: "uint256",
         indexed: false,
       },
     ],
-    name: 'Claimed',
+    name: "Claimed",
   },
   {
-    type: 'event',
+    type: "event",
     anonymous: false,
     inputs: [
       {
-        name: 'claimId',
-        internalType: 'bytes32',
-        type: 'bytes32',
+        name: "claimId",
+        internalType: "bytes32",
+        type: "bytes32",
         indexed: true,
       },
       {
-        name: 'amount',
-        internalType: 'uint256',
-        type: 'uint256',
+        name: "amount",
+        internalType: "uint256",
+        type: "uint256",
         indexed: false,
       },
     ],
-    name: 'Deposited',
+    name: "Deposited",
   },
   {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [{ name: 'claimId', internalType: 'bytes32', type: 'bytes32' }],
-    name: 'balanceOf',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "claimId", internalType: "bytes32", type: "bytes32" }],
+    name: "balanceOf",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [
-      { name: 'to', internalType: 'address payable', type: 'address' },
-      { name: 'claimId', internalType: 'bytes32', type: 'bytes32' },
-      { name: 'postStateDigest', internalType: 'bytes32', type: 'bytes32' },
-      { name: 'seal', internalType: 'bytes', type: 'bytes' },
+      { name: "to", internalType: "address payable", type: "address" },
+      { name: "claimId", internalType: "bytes32", type: "bytes32" },
+      { name: "postStateDigest", internalType: "bytes32", type: "bytes32" },
+      { name: "seal", internalType: "bytes", type: "bytes" },
     ],
-    name: 'claim',
+    name: "claim",
     outputs: [],
   },
   {
-    stateMutability: 'payable',
-    type: 'function',
-    inputs: [{ name: 'claimId', internalType: 'bytes32', type: 'bytes32' }],
-    name: 'deposit',
+    stateMutability: "payable",
+    type: "function",
+    inputs: [{ name: "claimId", internalType: "bytes32", type: "bytes32" }],
+    name: "deposit",
     outputs: [],
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [],
-    name: 'imageId',
-    outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    name: "imageId",
+    outputs: [{ name: "", internalType: "bytes32", type: "bytes32" }],
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [],
-    name: 'verifier',
+    name: "verifier",
     outputs: [
-      { name: '', internalType: 'contract IRiscZeroVerifier', type: 'address' },
+      { name: "", internalType: "contract IRiscZeroVerifier", type: "address" },
     ],
   },
-] as const
+] as const;
 
 /**
  * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x834f362A264714cB876334C997aEFEb3FE581Ff5)
  */
 export const bonsaiPayAddress = {
-  11155111: "0xa7C28a226eacA9Ef7d56FaA7A0d8c4ac6e4216C2",
+  11155111: "0x684aC3ae0e3C93cc73f16192578d834536616281",
 } as const;
 
 /**
@@ -147,7 +147,7 @@ export const bonsaiPayAddress = {
 export const bonsaiPayConfig = {
   address: bonsaiPayAddress,
   abi: bonsaiPayABI,
-} as const
+} as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // erc20
@@ -155,100 +155,100 @@ export const bonsaiPayConfig = {
 
 export const erc20ABI = [
   {
-    type: 'event',
+    type: "event",
     inputs: [
-      { name: 'owner', type: 'address', indexed: true },
-      { name: 'spender', type: 'address', indexed: true },
-      { name: 'value', type: 'uint256', indexed: false },
+      { name: "owner", type: "address", indexed: true },
+      { name: "spender", type: "address", indexed: true },
+      { name: "value", type: "uint256", indexed: false },
     ],
-    name: 'Approval',
+    name: "Approval",
   },
   {
-    type: 'event',
+    type: "event",
     inputs: [
-      { name: 'from', type: 'address', indexed: true },
-      { name: 'to', type: 'address', indexed: true },
-      { name: 'value', type: 'uint256', indexed: false },
+      { name: "from", type: "address", indexed: true },
+      { name: "to", type: "address", indexed: true },
+      { name: "value", type: "uint256", indexed: false },
     ],
-    name: 'Transfer',
+    name: "Transfer",
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [
-      { name: 'owner', type: 'address' },
-      { name: 'spender', type: 'address' },
+      { name: "owner", type: "address" },
+      { name: "spender", type: "address" },
     ],
-    name: 'allowance',
-    outputs: [{ name: '', type: 'uint256' }],
+    name: "allowance",
+    outputs: [{ name: "", type: "uint256" }],
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [
-      { name: 'spender', type: 'address' },
-      { name: 'amount', type: 'uint256' },
+      { name: "spender", type: "address" },
+      { name: "amount", type: "uint256" },
     ],
-    name: 'approve',
-    outputs: [{ name: '', type: 'bool' }],
+    name: "approve",
+    outputs: [{ name: "", type: "bool" }],
   },
   {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [{ name: 'account', type: 'address' }],
-    name: 'balanceOf',
-    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "account", type: "address" }],
+    name: "balanceOf",
+    outputs: [{ name: "", type: "uint256" }],
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [],
-    name: 'decimals',
-    outputs: [{ name: '', type: 'uint8' }],
+    name: "decimals",
+    outputs: [{ name: "", type: "uint8" }],
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [],
-    name: 'name',
-    outputs: [{ name: '', type: 'string' }],
+    name: "name",
+    outputs: [{ name: "", type: "string" }],
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [],
-    name: 'symbol',
-    outputs: [{ name: '', type: 'string' }],
+    name: "symbol",
+    outputs: [{ name: "", type: "string" }],
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [],
-    name: 'totalSupply',
-    outputs: [{ name: '', type: 'uint256' }],
+    name: "totalSupply",
+    outputs: [{ name: "", type: "uint256" }],
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [
-      { name: 'recipient', type: 'address' },
-      { name: 'amount', type: 'uint256' },
+      { name: "recipient", type: "address" },
+      { name: "amount", type: "uint256" },
     ],
-    name: 'transfer',
-    outputs: [{ name: '', type: 'bool' }],
+    name: "transfer",
+    outputs: [{ name: "", type: "bool" }],
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [
-      { name: 'sender', type: 'address' },
-      { name: 'recipient', type: 'address' },
-      { name: 'amount', type: 'uint256' },
+      { name: "sender", type: "address" },
+      { name: "recipient", type: "address" },
+      { name: "amount", type: "uint256" },
     ],
-    name: 'transferFrom',
-    outputs: [{ name: '', type: 'bool' }],
+    name: "transferFrom",
+    outputs: [{ name: "", type: "bool" }],
   },
-] as const
+] as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // React
@@ -261,18 +261,18 @@ export const erc20ABI = [
  */
 export function useBonsaiPayRead<
   TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof bonsaiPayABI, TFunctionName>,
+  TSelectData = ReadContractResult<typeof bonsaiPayABI, TFunctionName>
 >(
   config: Omit<
     UseContractReadConfig<typeof bonsaiPayABI, TFunctionName, TSelectData>,
-    'abi' | 'address'
-  > & { chainId?: keyof typeof bonsaiPayAddress } = {} as any,
+    "abi" | "address"
+  > & { chainId?: keyof typeof bonsaiPayAddress } = {} as any
 ) {
   return useContractRead({
     abi: bonsaiPayABI,
     address: bonsaiPayAddress[11155111],
     ...config,
-  } as UseContractReadConfig<typeof bonsaiPayABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<typeof bonsaiPayABI, TFunctionName, TSelectData>);
 }
 
 /**
@@ -281,20 +281,20 @@ export function useBonsaiPayRead<
  * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x834f362A264714cB876334C997aEFEb3FE581Ff5)
  */
 export function useBonsaiPayBalanceOf<
-  TFunctionName extends 'balanceOf',
-  TSelectData = ReadContractResult<typeof bonsaiPayABI, TFunctionName>,
+  TFunctionName extends "balanceOf",
+  TSelectData = ReadContractResult<typeof bonsaiPayABI, TFunctionName>
 >(
   config: Omit<
     UseContractReadConfig<typeof bonsaiPayABI, TFunctionName, TSelectData>,
-    'abi' | 'address' | 'functionName'
-  > & { chainId?: keyof typeof bonsaiPayAddress } = {} as any,
+    "abi" | "address" | "functionName"
+  > & { chainId?: keyof typeof bonsaiPayAddress } = {} as any
 ) {
   return useContractRead({
     abi: bonsaiPayABI,
     address: bonsaiPayAddress[11155111],
-    functionName: 'balanceOf',
+    functionName: "balanceOf",
     ...config,
-  } as UseContractReadConfig<typeof bonsaiPayABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<typeof bonsaiPayABI, TFunctionName, TSelectData>);
 }
 
 /**
@@ -303,20 +303,20 @@ export function useBonsaiPayBalanceOf<
  * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x834f362A264714cB876334C997aEFEb3FE581Ff5)
  */
 export function useBonsaiPayImageId<
-  TFunctionName extends 'imageId',
-  TSelectData = ReadContractResult<typeof bonsaiPayABI, TFunctionName>,
+  TFunctionName extends "imageId",
+  TSelectData = ReadContractResult<typeof bonsaiPayABI, TFunctionName>
 >(
   config: Omit<
     UseContractReadConfig<typeof bonsaiPayABI, TFunctionName, TSelectData>,
-    'abi' | 'address' | 'functionName'
-  > & { chainId?: keyof typeof bonsaiPayAddress } = {} as any,
+    "abi" | "address" | "functionName"
+  > & { chainId?: keyof typeof bonsaiPayAddress } = {} as any
 ) {
   return useContractRead({
     abi: bonsaiPayABI,
     address: bonsaiPayAddress[11155111],
-    functionName: 'imageId',
+    functionName: "imageId",
     ...config,
-  } as UseContractReadConfig<typeof bonsaiPayABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<typeof bonsaiPayABI, TFunctionName, TSelectData>);
 }
 
 /**
@@ -325,20 +325,20 @@ export function useBonsaiPayImageId<
  * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x834f362A264714cB876334C997aEFEb3FE581Ff5)
  */
 export function useBonsaiPayVerifier<
-  TFunctionName extends 'verifier',
-  TSelectData = ReadContractResult<typeof bonsaiPayABI, TFunctionName>,
+  TFunctionName extends "verifier",
+  TSelectData = ReadContractResult<typeof bonsaiPayABI, TFunctionName>
 >(
   config: Omit<
     UseContractReadConfig<typeof bonsaiPayABI, TFunctionName, TSelectData>,
-    'abi' | 'address' | 'functionName'
-  > & { chainId?: keyof typeof bonsaiPayAddress } = {} as any,
+    "abi" | "address" | "functionName"
+  > & { chainId?: keyof typeof bonsaiPayAddress } = {} as any
 ) {
   return useContractRead({
     abi: bonsaiPayABI,
     address: bonsaiPayAddress[11155111],
-    functionName: 'verifier',
+    functionName: "verifier",
     ...config,
-  } as UseContractReadConfig<typeof bonsaiPayABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<typeof bonsaiPayABI, TFunctionName, TSelectData>);
 }
 
 /**
@@ -349,28 +349,28 @@ export function useBonsaiPayVerifier<
 export function useBonsaiPayWrite<
   TFunctionName extends string,
   TMode extends WriteContractMode = undefined,
-  TChainId extends number = keyof typeof bonsaiPayAddress,
+  TChainId extends number = keyof typeof bonsaiPayAddress
 >(
-  config: TMode extends 'prepared'
+  config: TMode extends "prepared"
     ? UseContractWriteConfig<
         PrepareWriteContractResult<
           typeof bonsaiPayABI,
           string
-        >['request']['abi'],
+        >["request"]["abi"],
         TFunctionName,
         TMode
       > & { address?: Address; chainId?: TChainId }
     : UseContractWriteConfig<typeof bonsaiPayABI, TFunctionName, TMode> & {
-        abi?: never
-        address?: never
-        chainId?: TChainId
-      } = {} as any,
+        abi?: never;
+        address?: never;
+        chainId?: TChainId;
+      } = {} as any
 ) {
   return useContractWrite<typeof bonsaiPayABI, TFunctionName, TMode>({
     abi: bonsaiPayABI,
     address: bonsaiPayAddress[11155111],
     ...config,
-  } as any)
+  } as any);
 }
 
 /**
@@ -380,30 +380,30 @@ export function useBonsaiPayWrite<
  */
 export function useBonsaiPayClaim<
   TMode extends WriteContractMode = undefined,
-  TChainId extends number = keyof typeof bonsaiPayAddress,
+  TChainId extends number = keyof typeof bonsaiPayAddress
 >(
-  config: TMode extends 'prepared'
+  config: TMode extends "prepared"
     ? UseContractWriteConfig<
         PrepareWriteContractResult<
           typeof bonsaiPayABI,
-          'claim'
-        >['request']['abi'],
-        'claim',
+          "claim"
+        >["request"]["abi"],
+        "claim",
         TMode
-      > & { address?: Address; chainId?: TChainId; functionName?: 'claim' }
-    : UseContractWriteConfig<typeof bonsaiPayABI, 'claim', TMode> & {
-        abi?: never
-        address?: never
-        chainId?: TChainId
-        functionName?: 'claim'
-      } = {} as any,
+      > & { address?: Address; chainId?: TChainId; functionName?: "claim" }
+    : UseContractWriteConfig<typeof bonsaiPayABI, "claim", TMode> & {
+        abi?: never;
+        address?: never;
+        chainId?: TChainId;
+        functionName?: "claim";
+      } = {} as any
 ) {
-  return useContractWrite<typeof bonsaiPayABI, 'claim', TMode>({
+  return useContractWrite<typeof bonsaiPayABI, "claim", TMode>({
     abi: bonsaiPayABI,
     address: bonsaiPayAddress[11155111],
-    functionName: 'claim',
+    functionName: "claim",
     ...config,
-  } as any)
+  } as any);
 }
 
 /**
@@ -413,30 +413,30 @@ export function useBonsaiPayClaim<
  */
 export function useBonsaiPayDeposit<
   TMode extends WriteContractMode = undefined,
-  TChainId extends number = keyof typeof bonsaiPayAddress,
+  TChainId extends number = keyof typeof bonsaiPayAddress
 >(
-  config: TMode extends 'prepared'
+  config: TMode extends "prepared"
     ? UseContractWriteConfig<
         PrepareWriteContractResult<
           typeof bonsaiPayABI,
-          'deposit'
-        >['request']['abi'],
-        'deposit',
+          "deposit"
+        >["request"]["abi"],
+        "deposit",
         TMode
-      > & { address?: Address; chainId?: TChainId; functionName?: 'deposit' }
-    : UseContractWriteConfig<typeof bonsaiPayABI, 'deposit', TMode> & {
-        abi?: never
-        address?: never
-        chainId?: TChainId
-        functionName?: 'deposit'
-      } = {} as any,
+      > & { address?: Address; chainId?: TChainId; functionName?: "deposit" }
+    : UseContractWriteConfig<typeof bonsaiPayABI, "deposit", TMode> & {
+        abi?: never;
+        address?: never;
+        chainId?: TChainId;
+        functionName?: "deposit";
+      } = {} as any
 ) {
-  return useContractWrite<typeof bonsaiPayABI, 'deposit', TMode>({
+  return useContractWrite<typeof bonsaiPayABI, "deposit", TMode>({
     abi: bonsaiPayABI,
     address: bonsaiPayAddress[11155111],
-    functionName: 'deposit',
+    functionName: "deposit",
     ...config,
-  } as any)
+  } as any);
 }
 
 /**
@@ -447,14 +447,14 @@ export function useBonsaiPayDeposit<
 export function usePrepareBonsaiPayWrite<TFunctionName extends string>(
   config: Omit<
     UsePrepareContractWriteConfig<typeof bonsaiPayABI, TFunctionName>,
-    'abi' | 'address'
-  > & { chainId?: keyof typeof bonsaiPayAddress } = {} as any,
+    "abi" | "address"
+  > & { chainId?: keyof typeof bonsaiPayAddress } = {} as any
 ) {
   return usePrepareContractWrite({
     abi: bonsaiPayABI,
     address: bonsaiPayAddress[11155111],
     ...config,
-  } as UsePrepareContractWriteConfig<typeof bonsaiPayABI, TFunctionName>)
+  } as UsePrepareContractWriteConfig<typeof bonsaiPayABI, TFunctionName>);
 }
 
 /**
@@ -464,16 +464,16 @@ export function usePrepareBonsaiPayWrite<TFunctionName extends string>(
  */
 export function usePrepareBonsaiPayClaim(
   config: Omit<
-    UsePrepareContractWriteConfig<typeof bonsaiPayABI, 'claim'>,
-    'abi' | 'address' | 'functionName'
-  > & { chainId?: keyof typeof bonsaiPayAddress } = {} as any,
+    UsePrepareContractWriteConfig<typeof bonsaiPayABI, "claim">,
+    "abi" | "address" | "functionName"
+  > & { chainId?: keyof typeof bonsaiPayAddress } = {} as any
 ) {
   return usePrepareContractWrite({
     abi: bonsaiPayABI,
     address: bonsaiPayAddress[11155111],
-    functionName: 'claim',
+    functionName: "claim",
     ...config,
-  } as UsePrepareContractWriteConfig<typeof bonsaiPayABI, 'claim'>)
+  } as UsePrepareContractWriteConfig<typeof bonsaiPayABI, "claim">);
 }
 
 /**
@@ -483,16 +483,16 @@ export function usePrepareBonsaiPayClaim(
  */
 export function usePrepareBonsaiPayDeposit(
   config: Omit<
-    UsePrepareContractWriteConfig<typeof bonsaiPayABI, 'deposit'>,
-    'abi' | 'address' | 'functionName'
-  > & { chainId?: keyof typeof bonsaiPayAddress } = {} as any,
+    UsePrepareContractWriteConfig<typeof bonsaiPayABI, "deposit">,
+    "abi" | "address" | "functionName"
+  > & { chainId?: keyof typeof bonsaiPayAddress } = {} as any
 ) {
   return usePrepareContractWrite({
     abi: bonsaiPayABI,
     address: bonsaiPayAddress[11155111],
-    functionName: 'deposit',
+    functionName: "deposit",
     ...config,
-  } as UsePrepareContractWriteConfig<typeof bonsaiPayABI, 'deposit'>)
+  } as UsePrepareContractWriteConfig<typeof bonsaiPayABI, "deposit">);
 }
 
 /**
@@ -503,14 +503,14 @@ export function usePrepareBonsaiPayDeposit(
 export function useBonsaiPayEvent<TEventName extends string>(
   config: Omit<
     UseContractEventConfig<typeof bonsaiPayABI, TEventName>,
-    'abi' | 'address'
-  > & { chainId?: keyof typeof bonsaiPayAddress } = {} as any,
+    "abi" | "address"
+  > & { chainId?: keyof typeof bonsaiPayAddress } = {} as any
 ) {
   return useContractEvent({
     abi: bonsaiPayABI,
     address: bonsaiPayAddress[11155111],
     ...config,
-  } as UseContractEventConfig<typeof bonsaiPayABI, TEventName>)
+  } as UseContractEventConfig<typeof bonsaiPayABI, TEventName>);
 }
 
 /**
@@ -520,16 +520,16 @@ export function useBonsaiPayEvent<TEventName extends string>(
  */
 export function useBonsaiPayClaimedEvent(
   config: Omit<
-    UseContractEventConfig<typeof bonsaiPayABI, 'Claimed'>,
-    'abi' | 'address' | 'eventName'
-  > & { chainId?: keyof typeof bonsaiPayAddress } = {} as any,
+    UseContractEventConfig<typeof bonsaiPayABI, "Claimed">,
+    "abi" | "address" | "eventName"
+  > & { chainId?: keyof typeof bonsaiPayAddress } = {} as any
 ) {
   return useContractEvent({
     abi: bonsaiPayABI,
     address: bonsaiPayAddress[11155111],
-    eventName: 'Claimed',
+    eventName: "Claimed",
     ...config,
-  } as UseContractEventConfig<typeof bonsaiPayABI, 'Claimed'>)
+  } as UseContractEventConfig<typeof bonsaiPayABI, "Claimed">);
 }
 
 /**
@@ -539,16 +539,16 @@ export function useBonsaiPayClaimedEvent(
  */
 export function useBonsaiPayDepositedEvent(
   config: Omit<
-    UseContractEventConfig<typeof bonsaiPayABI, 'Deposited'>,
-    'abi' | 'address' | 'eventName'
-  > & { chainId?: keyof typeof bonsaiPayAddress } = {} as any,
+    UseContractEventConfig<typeof bonsaiPayABI, "Deposited">,
+    "abi" | "address" | "eventName"
+  > & { chainId?: keyof typeof bonsaiPayAddress } = {} as any
 ) {
   return useContractEvent({
     abi: bonsaiPayABI,
     address: bonsaiPayAddress[11155111],
-    eventName: 'Deposited',
+    eventName: "Deposited",
     ...config,
-  } as UseContractEventConfig<typeof bonsaiPayABI, 'Deposited'>)
+  } as UseContractEventConfig<typeof bonsaiPayABI, "Deposited">);
 }
 
 /**
@@ -556,132 +556,132 @@ export function useBonsaiPayDepositedEvent(
  */
 export function useErc20Read<
   TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>,
+  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>
 >(
   config: Omit<
     UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>,
-    'abi'
-  > = {} as any,
+    "abi"
+  > = {} as any
 ) {
   return useContractRead({ abi: erc20ABI, ...config } as UseContractReadConfig<
     typeof erc20ABI,
     TFunctionName,
     TSelectData
-  >)
+  >);
 }
 
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link erc20ABI}__ and `functionName` set to `"allowance"`.
  */
 export function useErc20Allowance<
-  TFunctionName extends 'allowance',
-  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>,
+  TFunctionName extends "allowance",
+  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>
 >(
   config: Omit<
     UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>,
-    'abi' | 'functionName'
-  > = {} as any,
+    "abi" | "functionName"
+  > = {} as any
 ) {
   return useContractRead({
     abi: erc20ABI,
-    functionName: 'allowance',
+    functionName: "allowance",
     ...config,
-  } as UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>);
 }
 
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link erc20ABI}__ and `functionName` set to `"balanceOf"`.
  */
 export function useErc20BalanceOf<
-  TFunctionName extends 'balanceOf',
-  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>,
+  TFunctionName extends "balanceOf",
+  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>
 >(
   config: Omit<
     UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>,
-    'abi' | 'functionName'
-  > = {} as any,
+    "abi" | "functionName"
+  > = {} as any
 ) {
   return useContractRead({
     abi: erc20ABI,
-    functionName: 'balanceOf',
+    functionName: "balanceOf",
     ...config,
-  } as UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>);
 }
 
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link erc20ABI}__ and `functionName` set to `"decimals"`.
  */
 export function useErc20Decimals<
-  TFunctionName extends 'decimals',
-  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>,
+  TFunctionName extends "decimals",
+  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>
 >(
   config: Omit<
     UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>,
-    'abi' | 'functionName'
-  > = {} as any,
+    "abi" | "functionName"
+  > = {} as any
 ) {
   return useContractRead({
     abi: erc20ABI,
-    functionName: 'decimals',
+    functionName: "decimals",
     ...config,
-  } as UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>);
 }
 
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link erc20ABI}__ and `functionName` set to `"name"`.
  */
 export function useErc20Name<
-  TFunctionName extends 'name',
-  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>,
+  TFunctionName extends "name",
+  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>
 >(
   config: Omit<
     UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>,
-    'abi' | 'functionName'
-  > = {} as any,
+    "abi" | "functionName"
+  > = {} as any
 ) {
   return useContractRead({
     abi: erc20ABI,
-    functionName: 'name',
+    functionName: "name",
     ...config,
-  } as UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>);
 }
 
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link erc20ABI}__ and `functionName` set to `"symbol"`.
  */
 export function useErc20Symbol<
-  TFunctionName extends 'symbol',
-  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>,
+  TFunctionName extends "symbol",
+  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>
 >(
   config: Omit<
     UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>,
-    'abi' | 'functionName'
-  > = {} as any,
+    "abi" | "functionName"
+  > = {} as any
 ) {
   return useContractRead({
     abi: erc20ABI,
-    functionName: 'symbol',
+    functionName: "symbol",
     ...config,
-  } as UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>);
 }
 
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link erc20ABI}__ and `functionName` set to `"totalSupply"`.
  */
 export function useErc20TotalSupply<
-  TFunctionName extends 'totalSupply',
-  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>,
+  TFunctionName extends "totalSupply",
+  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>
 >(
   config: Omit<
     UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>,
-    'abi' | 'functionName'
-  > = {} as any,
+    "abi" | "functionName"
+  > = {} as any
 ) {
   return useContractRead({
     abi: erc20ABI,
-    functionName: 'totalSupply',
+    functionName: "totalSupply",
     ...config,
-  } as UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>);
 }
 
 /**
@@ -689,99 +689,99 @@ export function useErc20TotalSupply<
  */
 export function useErc20Write<
   TFunctionName extends string,
-  TMode extends WriteContractMode = undefined,
+  TMode extends WriteContractMode = undefined
 >(
-  config: TMode extends 'prepared'
+  config: TMode extends "prepared"
     ? UseContractWriteConfig<
-        PrepareWriteContractResult<typeof erc20ABI, string>['request']['abi'],
+        PrepareWriteContractResult<typeof erc20ABI, string>["request"]["abi"],
         TFunctionName,
         TMode
       >
     : UseContractWriteConfig<typeof erc20ABI, TFunctionName, TMode> & {
-        abi?: never
-      } = {} as any,
+        abi?: never;
+      } = {} as any
 ) {
   return useContractWrite<typeof erc20ABI, TFunctionName, TMode>({
     abi: erc20ABI,
     ...config,
-  } as any)
+  } as any);
 }
 
 /**
  * Wraps __{@link useContractWrite}__ with `abi` set to __{@link erc20ABI}__ and `functionName` set to `"approve"`.
  */
 export function useErc20Approve<TMode extends WriteContractMode = undefined>(
-  config: TMode extends 'prepared'
+  config: TMode extends "prepared"
     ? UseContractWriteConfig<
         PrepareWriteContractResult<
           typeof erc20ABI,
-          'approve'
-        >['request']['abi'],
-        'approve',
+          "approve"
+        >["request"]["abi"],
+        "approve",
         TMode
-      > & { functionName?: 'approve' }
-    : UseContractWriteConfig<typeof erc20ABI, 'approve', TMode> & {
-        abi?: never
-        functionName?: 'approve'
-      } = {} as any,
+      > & { functionName?: "approve" }
+    : UseContractWriteConfig<typeof erc20ABI, "approve", TMode> & {
+        abi?: never;
+        functionName?: "approve";
+      } = {} as any
 ) {
-  return useContractWrite<typeof erc20ABI, 'approve', TMode>({
+  return useContractWrite<typeof erc20ABI, "approve", TMode>({
     abi: erc20ABI,
-    functionName: 'approve',
+    functionName: "approve",
     ...config,
-  } as any)
+  } as any);
 }
 
 /**
  * Wraps __{@link useContractWrite}__ with `abi` set to __{@link erc20ABI}__ and `functionName` set to `"transfer"`.
  */
 export function useErc20Transfer<TMode extends WriteContractMode = undefined>(
-  config: TMode extends 'prepared'
+  config: TMode extends "prepared"
     ? UseContractWriteConfig<
         PrepareWriteContractResult<
           typeof erc20ABI,
-          'transfer'
-        >['request']['abi'],
-        'transfer',
+          "transfer"
+        >["request"]["abi"],
+        "transfer",
         TMode
-      > & { functionName?: 'transfer' }
-    : UseContractWriteConfig<typeof erc20ABI, 'transfer', TMode> & {
-        abi?: never
-        functionName?: 'transfer'
-      } = {} as any,
+      > & { functionName?: "transfer" }
+    : UseContractWriteConfig<typeof erc20ABI, "transfer", TMode> & {
+        abi?: never;
+        functionName?: "transfer";
+      } = {} as any
 ) {
-  return useContractWrite<typeof erc20ABI, 'transfer', TMode>({
+  return useContractWrite<typeof erc20ABI, "transfer", TMode>({
     abi: erc20ABI,
-    functionName: 'transfer',
+    functionName: "transfer",
     ...config,
-  } as any)
+  } as any);
 }
 
 /**
  * Wraps __{@link useContractWrite}__ with `abi` set to __{@link erc20ABI}__ and `functionName` set to `"transferFrom"`.
  */
 export function useErc20TransferFrom<
-  TMode extends WriteContractMode = undefined,
+  TMode extends WriteContractMode = undefined
 >(
-  config: TMode extends 'prepared'
+  config: TMode extends "prepared"
     ? UseContractWriteConfig<
         PrepareWriteContractResult<
           typeof erc20ABI,
-          'transferFrom'
-        >['request']['abi'],
-        'transferFrom',
+          "transferFrom"
+        >["request"]["abi"],
+        "transferFrom",
         TMode
-      > & { functionName?: 'transferFrom' }
-    : UseContractWriteConfig<typeof erc20ABI, 'transferFrom', TMode> & {
-        abi?: never
-        functionName?: 'transferFrom'
-      } = {} as any,
+      > & { functionName?: "transferFrom" }
+    : UseContractWriteConfig<typeof erc20ABI, "transferFrom", TMode> & {
+        abi?: never;
+        functionName?: "transferFrom";
+      } = {} as any
 ) {
-  return useContractWrite<typeof erc20ABI, 'transferFrom', TMode>({
+  return useContractWrite<typeof erc20ABI, "transferFrom", TMode>({
     abi: erc20ABI,
-    functionName: 'transferFrom',
+    functionName: "transferFrom",
     ...config,
-  } as any)
+  } as any);
 }
 
 /**
@@ -790,13 +790,13 @@ export function useErc20TransferFrom<
 export function usePrepareErc20Write<TFunctionName extends string>(
   config: Omit<
     UsePrepareContractWriteConfig<typeof erc20ABI, TFunctionName>,
-    'abi'
-  > = {} as any,
+    "abi"
+  > = {} as any
 ) {
   return usePrepareContractWrite({
     abi: erc20ABI,
     ...config,
-  } as UsePrepareContractWriteConfig<typeof erc20ABI, TFunctionName>)
+  } as UsePrepareContractWriteConfig<typeof erc20ABI, TFunctionName>);
 }
 
 /**
@@ -804,15 +804,15 @@ export function usePrepareErc20Write<TFunctionName extends string>(
  */
 export function usePrepareErc20Approve(
   config: Omit<
-    UsePrepareContractWriteConfig<typeof erc20ABI, 'approve'>,
-    'abi' | 'functionName'
-  > = {} as any,
+    UsePrepareContractWriteConfig<typeof erc20ABI, "approve">,
+    "abi" | "functionName"
+  > = {} as any
 ) {
   return usePrepareContractWrite({
     abi: erc20ABI,
-    functionName: 'approve',
+    functionName: "approve",
     ...config,
-  } as UsePrepareContractWriteConfig<typeof erc20ABI, 'approve'>)
+  } as UsePrepareContractWriteConfig<typeof erc20ABI, "approve">);
 }
 
 /**
@@ -820,15 +820,15 @@ export function usePrepareErc20Approve(
  */
 export function usePrepareErc20Transfer(
   config: Omit<
-    UsePrepareContractWriteConfig<typeof erc20ABI, 'transfer'>,
-    'abi' | 'functionName'
-  > = {} as any,
+    UsePrepareContractWriteConfig<typeof erc20ABI, "transfer">,
+    "abi" | "functionName"
+  > = {} as any
 ) {
   return usePrepareContractWrite({
     abi: erc20ABI,
-    functionName: 'transfer',
+    functionName: "transfer",
     ...config,
-  } as UsePrepareContractWriteConfig<typeof erc20ABI, 'transfer'>)
+  } as UsePrepareContractWriteConfig<typeof erc20ABI, "transfer">);
 }
 
 /**
@@ -836,15 +836,15 @@ export function usePrepareErc20Transfer(
  */
 export function usePrepareErc20TransferFrom(
   config: Omit<
-    UsePrepareContractWriteConfig<typeof erc20ABI, 'transferFrom'>,
-    'abi' | 'functionName'
-  > = {} as any,
+    UsePrepareContractWriteConfig<typeof erc20ABI, "transferFrom">,
+    "abi" | "functionName"
+  > = {} as any
 ) {
   return usePrepareContractWrite({
     abi: erc20ABI,
-    functionName: 'transferFrom',
+    functionName: "transferFrom",
     ...config,
-  } as UsePrepareContractWriteConfig<typeof erc20ABI, 'transferFrom'>)
+  } as UsePrepareContractWriteConfig<typeof erc20ABI, "transferFrom">);
 }
 
 /**
@@ -853,13 +853,13 @@ export function usePrepareErc20TransferFrom(
 export function useErc20Event<TEventName extends string>(
   config: Omit<
     UseContractEventConfig<typeof erc20ABI, TEventName>,
-    'abi'
-  > = {} as any,
+    "abi"
+  > = {} as any
 ) {
   return useContractEvent({
     abi: erc20ABI,
     ...config,
-  } as UseContractEventConfig<typeof erc20ABI, TEventName>)
+  } as UseContractEventConfig<typeof erc20ABI, TEventName>);
 }
 
 /**
@@ -867,15 +867,15 @@ export function useErc20Event<TEventName extends string>(
  */
 export function useErc20ApprovalEvent(
   config: Omit<
-    UseContractEventConfig<typeof erc20ABI, 'Approval'>,
-    'abi' | 'eventName'
-  > = {} as any,
+    UseContractEventConfig<typeof erc20ABI, "Approval">,
+    "abi" | "eventName"
+  > = {} as any
 ) {
   return useContractEvent({
     abi: erc20ABI,
-    eventName: 'Approval',
+    eventName: "Approval",
     ...config,
-  } as UseContractEventConfig<typeof erc20ABI, 'Approval'>)
+  } as UseContractEventConfig<typeof erc20ABI, "Approval">);
 }
 
 /**
@@ -883,13 +883,13 @@ export function useErc20ApprovalEvent(
  */
 export function useErc20TransferEvent(
   config: Omit<
-    UseContractEventConfig<typeof erc20ABI, 'Transfer'>,
-    'abi' | 'eventName'
-  > = {} as any,
+    UseContractEventConfig<typeof erc20ABI, "Transfer">,
+    "abi" | "eventName"
+  > = {} as any
 ) {
   return useContractEvent({
     abi: erc20ABI,
-    eventName: 'Transfer',
+    eventName: "Transfer",
     ...config,
-  } as UseContractEventConfig<typeof erc20ABI, 'Transfer'>)
+  } as UseContractEventConfig<typeof erc20ABI, "Transfer">);
 }
