@@ -35,7 +35,7 @@ function App() {
         <ToastContainer />
         <div className="app-container">
           <h2 className="title">SP1 Pay Demo</h2>
-          <p className="subtitle">powered by SP1</p>
+
           <ConnectKitButton mode="light" />
           <ViewSelection />
           <p className="read-the-docs">This is for demo purposes only.</p>
