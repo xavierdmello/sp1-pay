@@ -14,7 +14,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.20;
-
+import "forge-std/console.sol";
 import {ISP1Verifier} from "@sp1-contracts/ISP1Verifier.sol";
 
 contract BonsaiPay {
@@ -63,22 +63,29 @@ contract BonsaiPay {
     }
 
     function claim(bytes calldata proof, bytes calldata publicValues) public {
+        console.log("claim called");
         ProofOutputs memory po = abi.decode(publicValues, (ProofOutputs));
-
+        console.log("proof outputs decoded");
         if (po.msg_sender == address(0)) revert InvalidClaim("Invalid recipient address");
+        console.log("recipient address valid");
         if (po.claim_id == bytes32(0)) revert InvalidClaim("Empty claimId");
+        console.log("claim id valid");
 
         verifier.verifyProof(bonsaiPayVKey, publicValues, proof);
-
+        console.log("proof verified");
         uint256[] storage depositIndices = claimRecords[po.claim_id];
         uint256 balance = _processDeposits(depositIndices);
+        console.log("balance calculated");
 
         if (balance == 0) revert InvalidClaim("No claimable balance");
+        console.log("balance valid");
 
         (bool success,) = po.msg_sender.call{value: balance}("");
+        console.log("transfer successful");
         if (!success) revert TransferFailed();
 
         emit Claimed(po.msg_sender, po.claim_id, balance);
+        console.log("event emitted");
     }
 
     function balanceOf(bytes32 claimId) public view returns (uint256) {

@@ -22,7 +22,9 @@ use common::{ProofInputs, ProofOutputs};
 use log::info;
 use serde::{Deserialize, Serialize};
 use sp1_pay_script::TxSender;
-use sp1_sdk::{utils,HashableKey, ProverClient, SP1ProofWithPublicValues, SP1Stdin, SP1VerifyingKey};
+use sp1_sdk::{
+    utils, HashableKey, ProverClient, SP1ProofWithPublicValues, SP1Stdin, SP1VerifyingKey,
+};
 use tokio::sync::oneshot;
 use warp::Filter;
 
@@ -121,11 +123,16 @@ fn prove_and_send_transaction(args: Args, token: String, tx: oneshot::Sender<(Ve
 
     info!("Claim ID: {:?}", claims.0);
     info!("Msg Sender: {:?}", claims.1);
+    let proof_as_bytes = if std::env::var("SP1_PROVER").unwrap().to_lowercase() == "mock" {
+        vec![]
+    } else {
+        proof.bytes()
+    };
 
     let calldata = IBonsaiPay::IBonsaiPayCalls::claim(IBonsaiPay::claimCall {
-        proof: Bytes::from(proof.bytes()),
+        proof: Bytes::from(proof_as_bytes),
         publicValues: Bytes::from(proof.public_values.to_vec()),
-    })  
+    })
     .abi_encode();
 
     // Send the calldata to Ethereum.
