@@ -24,10 +24,9 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
     args: [toHex(sha256(email ?? ""))],
   });
 
-  useEffect(() => { 
+  useEffect(() => {
     setIsNonZeroBalance(balance !== 0n);
   }, [balance]);
-
 
   const { VITE_API_HOST } = import.meta.env;
 
@@ -69,10 +68,13 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
   return (
     <>
       <Account email={email} disabled={disabled} hideClaim={true} />
-      <button onClick={handleClick} disabled={isLoading || disabled || isClaimed || !isNonZeroBalance}>
-        {isClaimed ? "Claimed" : isLoading ? "Proving..." : "Prove with Bonsai™"}
+      <button
+        onClick={handleClick}
+        disabled={isLoading || disabled || isClaimed || !isNonZeroBalance}
+      >
+        {isClaimed ? "Claimed" : isLoading ? "Proving..." : "Prove with SP1"}
       </button>
-      {isLoading ? <p>This will take a few moments...</p> : <p></p>} 
+      {isLoading ? <p>This will take a few moments...</p> : <p></p>}
     </>
   );
 };
