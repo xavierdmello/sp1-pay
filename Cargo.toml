@@ -1,5 +1,5 @@
 [workspace]
-members = ["./common", "./program", "./script", "./oidc-validator"]
+members = ["./common", "./program", "./script", "./oidc-validator", "./api"]
 resolver = "2"
 
 [workspace.package]
@@ -36,7 +36,8 @@ oidc-validator = { path = "./oidc-validator" }
 sha2 = "0.10.8"
 sp1-zkvm = { git = "https://github.com/succinctlabs/sp1.git", tag = "v1.1.1" }
 common = { path = "./common" }
-
+# Documentation: https://docs.rs/vercel_runtime/latest/vercel_runtime
+vercel_runtime = { version = "1" }
 [patch.crates-io]
 sha2-v0-9-9 = { git = "https://github.com/sp1-patches/RustCrypto-hashes", package = "sha2", branch = "patch-sha2-v0.9.9" }
 sha2-v0-10-8 = { git = "https://github.com/sp1-patches/RustCrypto-hashes", package = "sha2", branch = "patch-sha2-v0.10.8" }

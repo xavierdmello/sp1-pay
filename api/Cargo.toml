@@ -1,7 +1,12 @@
 [package]
-name = "common"
+name = "api"
 version = "0.1.0"
 edition = "2021"
+
+# Each handler has to be specified as [[bin]]
+[[bin]]
+name = "handler"
+path = "handler.rs"
 
 [dependencies]
 serde = { workspace = true }
