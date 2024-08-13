@@ -10,3 +10,4 @@ alloy-primitives = { workspace = true }
 alloy-sol-types = { workspace = true }
 vercel_runtime = { workspace = true }
 tokio = { workspace = true }
+anyhow = { workspace = true }

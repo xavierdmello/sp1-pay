@@ -1,0 +1,24 @@
+[workspace]
+[package]
+name = "ui"
+version = "0.1.0"
+edition = "2021"
+
+# Each handler has to be specified as [[bin]]
+[[bin]]
+name = "handler"
+path = "api/handler.rs"
+
+[dependencies]
+serde = "1.0.203"
+serde_json = "1.0.11"
+alloy-primitives = { version = "0.7.7", features=["serde"]}
+alloy-sol-types = {version = "0.7.7"}
+vercel_runtime = { version = "1" }
+tokio = "1.38.0"
+sp1-sdk = { git = "https://github.com/succinctlabs/sp1.git", tag = "v1.1.1" }
+log = "0.4.22"
+hex = "0.4.3"
+anyhow = "1.0.86"
+hyper = "1.4.1"
+http-body-util = "0.1.2"

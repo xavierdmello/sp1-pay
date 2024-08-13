@@ -1,5 +1,5 @@
 [workspace]
-members = ["./common", "./program", "./script", "./oidc-validator", "./api"]
+members = ["./common", "./program", "./script", "./oidc-validator"]
 resolver = "2"
 
 [workspace.package]
@@ -36,6 +36,9 @@ oidc-validator = { path = "./oidc-validator" }
 sha2 = "0.10.8"
 sp1-zkvm = { git = "https://github.com/succinctlabs/sp1.git", tag = "v1.1.1" }
 common = { path = "./common" }
+hyper = "1.4.1"
+http-body-util = "0.1.2"
+
 # Documentation: https://docs.rs/vercel_runtime/latest/vercel_runtime
 vercel_runtime = { version = "1" }
 [patch.crates-io]
