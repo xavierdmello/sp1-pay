@@ -47,8 +47,8 @@ impl IdentityProvider {
         match self {
             Self::Google => {
                 let decoded = decode_token::<GoogleClaims>(token, &GOOGLE_KEYS).unwrap();
-                println!("Decoded email: {}", decoded.email);
-                println!("Decoded nonce: {}", decoded.nonce);
+                // println!("Decoded email: {}", decoded.email);
+                // println!("Decoded nonce: {}", decoded.nonce);
                 Ok((decoded.email.to_string(), decoded.nonce))
             }
             Self::Test => {
