@@ -3,17 +3,30 @@ import Account from "./Account";
 import { useBonsaiPayClaimedEvent, useBonsaiPayBalanceOf } from "../generated";
 import { sha256 } from "@noble/hashes/sha256";
 import { toHex } from "viem";
-
+import { useContractWrite, usePrepareContractWrite } from "wagmi";
+import SP1PayABI from "../abi/SP1Pay.json";
 interface ProveProps {
   disabled: boolean;
   email: string | null;
 }
 
+let bonsaiPayAddress = import.meta.env.VITE_CUSTODY_ADDRESS;
+
 const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isClaimed, setIsClaimed] = useState(false);
   const [isNonZeroBalance, setIsNonZeroBalance] = useState(false);
+  const [proof, setProof] = useState<string | null>(null);
+  const [publicValues, setPublicValues] = useState<string | null>(null);
 
+  const { config } = usePrepareContractWrite({
+    address: bonsaiPayAddress,
+    abi: SP1PayABI,
+    functionName: "claim",
+    args: [proof, publicValues],
+  });
+
+  const { write } = useContractWrite(config);
   useBonsaiPayClaimedEvent({
     listener: () => {
       setIsClaimed(true);
@@ -45,15 +58,20 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
     }
 
     try {
-      const response = await fetch(`${VITE_API_HOST}/auth`, {
-        method: "GET",
+      const response = await fetch(`${VITE_API_HOST}/api/prove`, {
+        method: "POST",
         headers: {
+          "Content-Type": "application/json",
           "X-Auth-Token": jwt,
         },
+        body: JSON.stringify({ jwt }),
       });
 
       if (response.ok) {
-        await response.body;
+        const data = await response.json();
+        setProof(data.proof);
+        setPublicValues(data.publicValues);
+        write();
       } else {
         throw new Error("Response not OK");
       }

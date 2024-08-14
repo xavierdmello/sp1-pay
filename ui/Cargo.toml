@@ -6,8 +6,8 @@ edition = "2021"
 
 # Each handler has to be specified as [[bin]]
 [[bin]]
-name = "handler"
-path = "api/handler.rs"
+name = "prove"
+path = "api/prove.rs"
 
 [dependencies]
 serde = "1.0.203"
@@ -22,3 +22,4 @@ hex = "0.4.3"
 anyhow = "1.0.86"
 hyper = "1.4.1"
 http-body-util = "0.1.2"
+dotenv = "0.15.0"
