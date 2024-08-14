@@ -130,7 +130,7 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
           </a>
         </p>
       )}
-      {isLoading && <p>This will take a few minutes...</p>}
+      {isLoading && <p>This will take ~4 minutes...</p>}
     </>
   );
 };
