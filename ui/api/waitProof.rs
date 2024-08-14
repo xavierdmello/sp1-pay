@@ -41,7 +41,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
 
 pub async fn wait_proof(proof_id: &str) -> Result<Value, Error> {
     let network_prover = NetworkProver::new();
-    let proof = network_prover.wait_proof::<SP1ProofWithPublicValues>(proof_id, Some(Duration::from_secs(240))).await?;
+    let proof = network_prover.wait_proof::<SP1ProofWithPublicValues>(proof_id, Some(Duration::from_secs(300))).await?;
     let proof_bytes = proof.bytes();
 
     Ok(json!({
