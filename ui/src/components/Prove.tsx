@@ -103,7 +103,7 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
       >
         {isClaimed ? "Claimed" : isLoading ? "Proving..." : "Prove with SP1"}
       </button>
-      {isLoading ? <p>This will take a few moments...</p> : <p></p>}
+      {isLoading ? <p>This will take a few minutes...</p> : <p></p>}
     </>
   );
 };

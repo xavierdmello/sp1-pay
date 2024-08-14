@@ -90,10 +90,10 @@ const Claim: React.FC<ClaimProps> = () => {
 
             {email && <h5>{`Welcome, ${email}`}</h5>}
             <Prove disabled={false} email={email} />
-            <h6> 
-              Proving ownership will automatically 
+            <h6>
+              Once the proof is generated, please
               <br></br>
-              deposit the balance to your wallet.
+              confirm the deposit in your wallet.
             </h6>
           </>
         );
