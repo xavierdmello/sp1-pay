@@ -5,6 +5,7 @@ import { sha256 } from "@noble/hashes/sha256";
 import { toHex } from "viem";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import SP1PayABI from "../abi/SP1Pay";
+
 interface ProveProps {
   disabled: boolean;
   email: string | null;
@@ -19,6 +20,7 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
   const [proof, setProof] = useState<string | null>(null);
   const [publicValues, setPublicValues] = useState<string | null>(null);
   const [proofId, setProofId] = useState<string | null>(null);
+  const [proofExplorerLink, setProofExplorerLink] = useState<string | null>(null);
 
   const { config } = usePrepareContractWrite({
     address: bonsaiPayAddress,
@@ -71,7 +73,8 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
     }
 
     try {
-      const response = await fetch(`${VITE_API_HOST}/api/prove`, {
+      // Request the proof
+      const requestResponse = await fetch(`${VITE_API_HOST}/api/requestProof`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -80,23 +83,36 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
         body: JSON.stringify({ jwt }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        setProof(data.proof);
-        setPublicValues(data.publicValues);
-        setProofId(data.proofId);
+      if (requestResponse.ok) {
+        const { proofId } = await requestResponse.json();
+        setProofId(proofId);
+        setProofExplorerLink(`https://explorer.succinct.xyz/proof/${proofId}`);
+
+        // Wait for the proof
+        const waitResponse = await fetch(`${VITE_API_HOST}/api/waitProof`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ proof_id: proofId }),
+        });
+
+        if (waitResponse.ok) {
+          const data = await waitResponse.json();
+          setProof(data.proof);
+          setPublicValues(data.publicValues);
+        } else {
+          throw new Error("Wait proof response not OK");
+        }
       } else {
-        throw new Error("Response not OK");
+        throw new Error("Request proof response not OK");
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
       setIsLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-
+  }, [VITE_API_HOST]);
 
   return (
     <>
@@ -107,8 +123,14 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
       >
         {isClaimed ? "Claimed" : isLoading ? "Proving..." : "Prove with SP1"}
       </button>
-      {}
-      {isLoading ? <p>This will take a few minutes...</p> : <p></p>}
+      {proofExplorerLink && (
+        <p>
+          <a href={proofExplorerLink} target="_blank" rel="noopener noreferrer">
+            View Proof on Explorer
+          </a>
+        </p>
+      )}
+      {isLoading && <p>This will take a few minutes...</p>}
     </>
   );
 };
