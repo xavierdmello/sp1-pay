@@ -1,13 +1,9 @@
-use alloy_primitives::{Address, Bytes, FixedBytes, B256, U256};
-use alloy_sol_types::{sol, SolInterface, SolType, SolValue};
 use anyhow::Context;
 use http_body_util::BodyExt;
-use hyper::{body::Buf, Method};
-use log::info;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use serde_json::{json, Value};
 use sp1_sdk::{
-    proto::network::ProofMode, utils, HashableKey, NetworkProver, PlonkBn254Proof, ProverClient, SP1ProofWithPublicValues, SP1Stdin, SP1VerifyingKey
+    NetworkProver, SP1ProofWithPublicValues
 };
 use std::time::Duration;
 use vercel_runtime::{run, Body, Error, Request, Response, StatusCode};
