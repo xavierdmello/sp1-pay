@@ -20,7 +20,9 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
   const [proof, setProof] = useState<string | null>(null);
   const [publicValues, setPublicValues] = useState<string | null>(null);
   const [proofId, setProofId] = useState<string | null>(null);
-  const [proofExplorerLink, setProofExplorerLink] = useState<string | null>(null);
+  const [proofExplorerLink, setProofExplorerLink] = useState<string | null>(
+    null
+  );
 
   const { config } = usePrepareContractWrite({
     address: bonsaiPayAddress,
@@ -126,11 +128,11 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
       {proofExplorerLink && (
         <p>
           <a href={proofExplorerLink} target="_blank" rel="noopener noreferrer">
-            View Proof on Explorer
+            View In-Progress Proof on Explorer
           </a>
         </p>
       )}
-      {isLoading && <p>This will take ~4 minutes...</p>}
+      {isLoading && <p>This will take ~5 minutes...</p>}
     </>
   );
 };
