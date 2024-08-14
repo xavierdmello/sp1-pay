@@ -19,12 +19,6 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
   const [proof, setProof] = useState<string | null>(null);
   const [publicValues, setPublicValues] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (proof && publicValues) {
-      write?.();
-    }
-  }, [proof, publicValues]);
-
   const { config } = usePrepareContractWrite({
     address: bonsaiPayAddress,
     abi: SP1PayABI,
@@ -32,7 +26,19 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
     args: [proof ? `${proof}` : null, publicValues ? `${publicValues}` : null],
   });
 
-  const { data, isLoading: isTxLoading , isSuccess, write } = useContractWrite(config);
+  const {
+    data,
+    isLoading: isTxLoading,
+    isSuccess,
+    write,
+  } = useContractWrite(config);
+
+  useEffect(() => {
+    if (proof && publicValues) {
+      write?.();
+    }
+  }, [proof, publicValues, write]);
+
   useBonsaiPayClaimedEvent({
     listener: () => {
       setIsClaimed(true);
@@ -96,6 +102,13 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
         disabled={isLoading || disabled || isClaimed || !isNonZeroBalance}
       >
         {isClaimed ? "Claimed" : isLoading ? "Proving..." : "Prove with SP1"}
+      </button>
+
+      <button
+        onClick={write}
+        disabled={isLoading || disabled || isClaimed || !isNonZeroBalance}
+      >
+        manual Write
       </button>
       {isLoading ? <p>This will take a few moments...</p> : <p></p>}
     </>
