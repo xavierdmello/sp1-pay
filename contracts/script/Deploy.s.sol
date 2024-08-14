@@ -46,7 +46,7 @@ contract BonsaiPayDeploy is Script {
             verifier = ISP1Verifier(address(vm.envAddress("SP1_VERIFIER_ADDRESS")));
         }
         
-        BonsaiPay bonsaiPay = new BonsaiPay(verifier, vm.envBytes32("SP1_PAY_PROGRAM_VKEY"));
+        BonsaiPay bonsaiPay = new BonsaiPay(verifier, vm.envBytes32("SP1_PAY_PROGRAM_VKEY"), vm.envBytes("CERT"));
         console2.log("Deployed BonsaiPay to", address(bonsaiPay));
 
         vm.stopBroadcast();

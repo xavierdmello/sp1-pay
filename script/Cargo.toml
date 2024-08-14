@@ -2,15 +2,10 @@
 version = "0.1.0"
 name = "sp1-pay-script"
 edition = "2021"
-default-run = "pubsub"
 
 [[bin]]
-name = "pubsub"
-path = "src/bin/pubsub.rs"
-
-[[bin]]
-name = "vkey"
-path = "src/bin/vkey.rs"
+name = "genesis"
+path = "src/bin/genesis.rs"
 
 [dependencies]
 sp1-sdk = { workspace = true }
@@ -28,6 +23,7 @@ tokio = { workspace = true }
 warp = { workspace = true }
 ethers = { workspace = true }
 common = { workspace = true }
+reqwest = { version = "0.12.5", features = ["json"] }
 
 [build-dependencies]
 sp1-helper = { workspace = true }

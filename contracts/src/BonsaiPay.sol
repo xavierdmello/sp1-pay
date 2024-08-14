@@ -20,6 +20,8 @@ import {ISP1Verifier} from "@sp1-contracts/ISP1Verifier.sol";
 contract BonsaiPay {
     ISP1Verifier public immutable verifier;
     bytes32 public immutable bonsaiPayVKey;
+    bytes public cert;
+    address public owner;
 
     enum ClaimStatus {
         Pending,
@@ -35,6 +37,12 @@ contract BonsaiPay {
    struct ProofOutputs {
         address msg_sender;
         bytes32 claim_id;
+        bytes cert;
+    }
+
+    modifier onlyOwner() {
+       assert(msg.sender == owner);
+        _;
     }
     
     Deposit[] private deposits;
@@ -47,9 +55,11 @@ contract BonsaiPay {
     error InvalidClaim(string message);
     error TransferFailed();
 
-    constructor(ISP1Verifier _verifier, bytes32 _bonsaiPayVKey) {
+    constructor(ISP1Verifier _verifier, bytes32 _bonsaiPayVKey, bytes memory _cert) {
         verifier = _verifier;
         bonsaiPayVKey = _bonsaiPayVKey;
+        cert = _cert;
+        owner = msg.sender;
     }   
 
     function deposit(bytes32 claimId) public payable {
@@ -63,29 +73,23 @@ contract BonsaiPay {
     }
 
     function claim(bytes calldata proof, bytes calldata publicValues) public {
-        console.log("claim called");
         ProofOutputs memory po = abi.decode(publicValues, (ProofOutputs));
-        console.log("proof outputs decoded");
+
+        if (!(po.cert.length == cert.length && keccak256(po.cert) == keccak256(cert))) revert InvalidClaim("Invalid cert");
         if (po.msg_sender == address(0)) revert InvalidClaim("Invalid recipient address");
-        console.log("recipient address valid");
         if (po.claim_id == bytes32(0)) revert InvalidClaim("Empty claimId");
-        console.log("claim id valid");
 
         verifier.verifyProof(bonsaiPayVKey, publicValues, proof);
-        console.log("proof verified");
+
         uint256[] storage depositIndices = claimRecords[po.claim_id];
         uint256 balance = _processDeposits(depositIndices);
-        console.log("balance calculated");
 
         if (balance == 0) revert InvalidClaim("No claimable balance");
-        console.log("balance valid");
-
         (bool success,) = po.msg_sender.call{value: balance}("");
-        console.log("transfer successful");
+
         if (!success) revert TransferFailed();
 
         emit Claimed(po.msg_sender, po.claim_id, balance);
-        console.log("event emitted");
     }
 
     function balanceOf(bytes32 claimId) public view returns (uint256) {
@@ -120,5 +124,10 @@ contract BonsaiPay {
         }
 
         return balance;
+    }
+
+    // Update the JWT certificate - most providers rotate their certificates every so often
+    function updateCert(bytes calldata newCert) public onlyOwner {
+        cert = newCert;
     }
 }

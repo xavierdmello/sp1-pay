@@ -1,6 +1,6 @@
 mod certs;
 use alloy_primitives::{Uint, U256};
-use certs::{GOOGLE_PUB_JWK, TEST_PUB_JWK};
+use certs::TEST_PUB_JWK;
 use jwt_compact::{
     alg::{Rsa, RsaPublicKey},
     jwk::{JsonWebKey, KeyType},
@@ -9,25 +9,11 @@ use jwt_compact::{
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
+use common::JwkKeys;
 
 lazy_static! {
-    static ref GOOGLE_KEYS: JwkKeys =
-        serde_json::from_str(GOOGLE_PUB_JWK).expect("Failed to parse JWK");
     static ref TEST_KEYS: JwkKeys =
         serde_json::from_str(TEST_PUB_JWK).expect("Failed to parse JWK");
-}
-
-#[derive(Deserialize, Serialize)]
-struct JwkKeys {
-    keys: Vec<ExtendedJsonWebKey<'static, Extra>>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct ExtendedJsonWebKey<'a, T> {
-    #[serde(flatten)]
-    base: JsonWebKey<'a>,
-    #[serde(flatten)]
-    extra: T,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -43,12 +29,11 @@ pub enum IdentityProvider {
 }
 
 impl IdentityProvider {
-    pub fn validate(&self, token: &str) -> Result<(String, String), OidcErr> {
+    pub fn validate(&self, token: &str, cert: &JwkKeys) -> Result<(String, String), OidcErr> {
         match self {
             Self::Google => {
-                let decoded = decode_token::<GoogleClaims>(token, &GOOGLE_KEYS).unwrap();
-                // println!("Decoded email: {}", decoded.email);
-                // println!("Decoded nonce: {}", decoded.nonce);
+                let decoded = decode_token::<GoogleClaims>(token, cert).unwrap();
+
                 Ok((decoded.email.to_string(), decoded.nonce))
             }
             Self::Test => {
@@ -151,20 +136,19 @@ where
 #[cfg(test)]
 pub mod test_oidc_validator {
 
-    use crate::GOOGLE_KEYS;
     use std::env;
 
     use super::{decode_token, GoogleClaims};
 
-    #[ignore] // Ignoring this test because it requires a valid jwt token with env var.
-    #[test]
-    fn test_validate_google_jwt_valid_token() {
-        let jwt = env::var("jwt").expect("jwt not set");
-        let decoded = decode_token::<GoogleClaims>(&jwt, &GOOGLE_KEYS).unwrap();
+    // #[ignore] // Ignoring this test because it requires a valid jwt token with env var.
+    // #[test]
+    // fn test_validate_google_jwt_valid_token() {
+    //     let jwt = env::var("jwt").expect("jwt not set");
+    //     let decoded = decode_token::<GoogleClaims>(&jwt, &GOOGLE_KEYS).unwrap();
 
-        assert_eq!(&decoded.email, "hans@risczero.com");
-        assert_eq!(&decoded.nonce, "0xefdF9861F3eDc2404643B588378FE242FCadE658");
-    }
+    //     assert_eq!(&decoded.email, "hans@risczero.com");
+    //     assert_eq!(&decoded.nonce, "0xefdF9861F3eDc2404643B588378FE242FCadE658");
+    // }
 
     #[test]
     fn test_validate_test_jwt_valid_token() {

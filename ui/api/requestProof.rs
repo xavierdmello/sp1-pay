@@ -1,4 +1,4 @@
-use alloy_primitives::U256;
+use alloy_primitives::{U256, Bytes};
 use alloy_sol_types::sol;
 use anyhow::Context;
 use http_body_util::BodyExt;
@@ -9,6 +9,9 @@ use sp1_sdk::{
 };
 use vercel_runtime::{run, Body, Error, Request, Response, StatusCode};
 use dotenv::dotenv;
+use reqwest::get;
+use std::str::FromStr;
+use serde_json::Value;
 
 sol! {
     interface IBonsaiPay {
@@ -20,10 +23,11 @@ sol! {
 pub struct ProofInputs {
     pub identity_provider: U256,
     pub jwt: String,
+    pub cert: Bytes,
 }
 
 pub type ProofOutputs = sol! {
-    tuple(address, bytes32)
+    tuple(address, bytes32, bytes)
 };
 
 pub const ELF: &[u8] = include_bytes!("../../elf/riscv32im-succinct-zkvm-elf");
@@ -68,6 +72,7 @@ pub async fn request_proof(token: String) -> Result<String, Error> {
     let inputs = ProofInputs {
         identity_provider: U256::ZERO,
         jwt: token,
+        cert: fetch_google_jwt_cert().await.unwrap(),
     };
     stdin.write(&inputs);
 
@@ -77,4 +82,12 @@ pub async fn request_proof(token: String) -> Result<String, Error> {
     println!("Proof Link: https://explorer.succinct.xyz/proof/{}", proof_id);
 
     Ok(proof_id)
+}
+
+pub async fn fetch_google_jwt_cert() -> Result<Bytes, Box<dyn std::error::Error>> {
+    let url = "https://www.googleapis.com/oauth2/v3/certs";
+    let response = get(url).await?.json::<serde_json::Value>().await?;
+    let bytes = Bytes::from(serde_json::to_vec(&response).unwrap());
+
+    Ok(bytes)
 }

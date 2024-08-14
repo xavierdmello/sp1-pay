@@ -5522,6 +5522,7 @@ dependencies = [
  "http-body-util",
  "hyper 1.4.1",
  "log",
+ "reqwest 0.12.5",
  "serde",
  "serde_json",
  "sp1-sdk",

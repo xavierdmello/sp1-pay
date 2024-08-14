@@ -27,3 +27,4 @@ anyhow = "1.0.86"
 hyper = "1.4.1"
 http-body-util = "0.1.2"
 dotenv = "0.15.0"
+reqwest = { version = "0.12.5", features = ["json"] }

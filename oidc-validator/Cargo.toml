@@ -11,3 +11,4 @@ serde_json = { workspace = true }
 thiserror = { workspace = true }
 alloy-primitives = { workspace = true }
 alloy-sol-types = { workspace = true }
+common = { workspace = true }

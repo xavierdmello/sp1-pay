@@ -18,6 +18,7 @@ contract BonsaiPayTest is Test {
         bytes32 vkey;
         bytes publicValues;
         bytes proof;
+        bytes cert;
     }
 
     Fixture public fixture;
@@ -38,7 +39,7 @@ contract BonsaiPayTest is Test {
         fixture.proof = abi.decode(vm.parseJson(fixtureJson, ".proof"), (bytes));
 
         // Deploy BonsaiPay
-        bonsaiPay = new BonsaiPay(ISP1Verifier(address(mockVerifier)), fixture.vkey);
+        bonsaiPay = new BonsaiPay(ISP1Verifier(address(mockVerifier)), fixture.vkey, fixture.cert);
 
         // Fund Alice
         vm.deal(ALICE, 10 ether);

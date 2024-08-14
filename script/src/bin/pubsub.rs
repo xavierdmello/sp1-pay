@@ -21,7 +21,7 @@ use clap::Parser;
 use common::{ProofInputs, ProofOutputs};
 use log::info;
 use serde::{Deserialize, Serialize};
-use sp1_pay_script::TxSender;
+use sp1_pay_script::fetch_google_jwt_cert;
 use sp1_sdk::{
     utils, HashableKey, ProverClient, SP1ProofWithPublicValues, SP1Stdin, SP1VerifyingKey,
 };
@@ -93,11 +93,12 @@ fn prove_and_send_transaction(args: Args, token: String, tx: oneshot::Sender<(Ve
     let (pk, vk) = client.setup(FIBONACCI_ELF);
 
     // Setup the inputs.
+    let cert = fetch_google_jwt_cert().await.unwrap();
     let mut stdin = SP1Stdin::new();
-
     let inputs = ProofInputs {
         identity_provider: U256::ZERO,
         jwt: token,
+        cert: cert,
     };
     stdin.write(&inputs);
 

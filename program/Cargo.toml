@@ -10,3 +10,4 @@ sha2 = {workspace = true}
 sp1-zkvm = {workspace = true}
 oidc-validator = {workspace = true}
 common = {workspace = true}
+serde_json = {workspace = true}
