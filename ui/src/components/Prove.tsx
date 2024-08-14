@@ -19,6 +19,12 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
   const [proof, setProof] = useState<string | null>(null);
   const [publicValues, setPublicValues] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (proof && publicValues) {
+      write?.();
+    }
+  }, [proof, publicValues]);
+
   const { config } = usePrepareContractWrite({
     address: bonsaiPayAddress,
     abi: SP1PayABI,
@@ -71,9 +77,6 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
         const data = await response.json();
         setProof(data.proof);
         setPublicValues(data.publicValues);
-        console.log(data.proof);
-        console.log(data.publicValues);
-        write?.();
       } else {
         throw new Error("Response not OK");
       }
