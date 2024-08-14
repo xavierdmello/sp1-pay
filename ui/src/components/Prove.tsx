@@ -103,13 +103,6 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
       >
         {isClaimed ? "Claimed" : isLoading ? "Proving..." : "Prove with SP1"}
       </button>
-
-      <button
-        onClick={write}
-        disabled={isLoading || disabled || isClaimed || !isNonZeroBalance}
-      >
-        manual Write
-      </button>
       {isLoading ? <p>This will take a few moments...</p> : <p></p>}
     </>
   );
