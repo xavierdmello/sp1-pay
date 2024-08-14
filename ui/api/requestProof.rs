@@ -1,22 +1,23 @@
 use alloy_primitives::{Address, Bytes, FixedBytes, B256, U256};
 use alloy_sol_types::{sol, SolInterface, SolType, SolValue};
 use anyhow::Context;
-
 use http_body_util::BodyExt;
 use hyper::{body::Buf, Method};
 use log::info;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use sp1_sdk::{
-    utils, HashableKey, ProverClient, SP1ProofWithPublicValues, SP1Stdin, SP1VerifyingKey,
+    proto::network::ProofMode, utils, HashableKey, NetworkProver, PlonkBn254Proof, ProverClient, SP1ProofWithPublicValues, SP1Stdin, SP1VerifyingKey
 };
+use std::time::Duration;
 use vercel_runtime::{run, Body, Error, Request, Response, StatusCode};
+use dotenv::dotenv;
+
 sol! {
     interface IBonsaiPay {
         function claim(bytes calldata proof, bytes calldata publicValues);
     }
 }
-use dotenv::dotenv;
 
 #[derive(Serialize, Deserialize)]
 pub struct ProofInputs {
@@ -24,8 +25,6 @@ pub struct ProofInputs {
     pub jwt: String,
 }
 
-// address msg_sender
-// bytes32 claim_id
 pub type ProofOutputs = sol! {
     tuple(address, bytes32)
 };
@@ -50,11 +49,11 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
     let token_request: TokenRequest = serde_json::from_slice(&bytes)
         .context("Failed to deserialize request body")?;
 
-    match prove(token_request.jwt).await {
-        Ok(json) => Ok(Response::builder()
+    match request_proof(token_request.jwt).await {
+        Ok(proof_id) => Ok(Response::builder()
             .status(StatusCode::OK)
             .header("Content-Type", "application/json")
-            .body(Body::Text(json.to_string()))?),
+            .body(Body::Text(json!({ "proofId": proof_id }).to_string()))?),
         Err(e) => Ok(Response::builder()
             .status(StatusCode::INTERNAL_SERVER_ERROR)
             .header("Content-Type", "application/json")
@@ -62,15 +61,9 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
     }
 }
 
-// Prove the proof and return the calldata
-pub async fn prove(token: String) -> Result<Value, Error> {
+pub async fn request_proof(token: String) -> Result<String, Error> {
     // Setup the logger.
     sp1_sdk::utils::setup_logger();
-    // Setup the prover client.
-    let client = ProverClient::new();
-
-    // Setup the program.
-    let (pk, _) = client.setup(ELF);
 
     // Setup the inputs.
     let mut stdin = SP1Stdin::new();
@@ -81,21 +74,10 @@ pub async fn prove(token: String) -> Result<Value, Error> {
     };
     stdin.write(&inputs);
 
-    // Generate the proof.
-    let proof = client
-        .prove(&pk, stdin)
-        .plonk()
-        .run()
-        .expect("failed to generate proof");
+    // Request the proof.
+    let network_prover = NetworkProver::new();
+    let proof_id = network_prover.request_proof(ELF, stdin, ProofMode::Plonk).await?;
+    println!("Proof Link: https://explorer.succinct.xyz/proof/{}", proof_id);
 
-    let proof_bytes = if std::env::var("SP1_PROVER").unwrap().to_lowercase() == "mock" {
-        vec![]
-    } else {
-        proof.bytes()
-    };
-    
-    Ok(json!({
-        "proof": format!("0x{}", hex::encode(proof_bytes)),
-        "publicValues": format!("0x{}", hex::encode(proof.public_values.to_vec()))
-    }))
+    Ok(proof_id)
 }

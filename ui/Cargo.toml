@@ -6,8 +6,12 @@ edition = "2021"
 
 # Each handler has to be specified as [[bin]]
 [[bin]]
-name = "prove"
-path = "api/prove.rs"
+name = "request_proof"
+path = "api/requestProof.rs"
+
+[[bin]]
+name = "wait_proof"
+path = "api/waitProof.rs"
 
 [dependencies]
 serde = "1.0.203"

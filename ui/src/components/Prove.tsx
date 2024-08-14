@@ -18,6 +18,7 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
   const [isNonZeroBalance, setIsNonZeroBalance] = useState(false);
   const [proof, setProof] = useState<string | null>(null);
   const [publicValues, setPublicValues] = useState<string | null>(null);
+  const [proofId, setProofId] = useState<string | null>(null);
 
   const { config } = usePrepareContractWrite({
     address: bonsaiPayAddress,
@@ -83,6 +84,7 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
         const data = await response.json();
         setProof(data.proof);
         setPublicValues(data.publicValues);
+        setProofId(data.proofId);
       } else {
         throw new Error("Response not OK");
       }
@@ -94,6 +96,8 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+
+
   return (
     <>
       <Account email={email} disabled={disabled} hideClaim={true} />
@@ -103,6 +107,7 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
       >
         {isClaimed ? "Claimed" : isLoading ? "Proving..." : "Prove with SP1"}
       </button>
+      {}
       {isLoading ? <p>This will take a few minutes...</p> : <p></p>}
     </>
   );
