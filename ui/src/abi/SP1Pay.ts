@@ -1,4 +1,4 @@
-[
+export default [
   {
     "type": "constructor",
     "inputs": [
@@ -114,4 +114,4 @@
     ]
   },
   { "type": "error", "name": "TransferFailed", "inputs": [] }
-]
+] as const;

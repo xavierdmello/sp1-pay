@@ -4,7 +4,7 @@ import { useBonsaiPayClaimedEvent, useBonsaiPayBalanceOf } from "../generated";
 import { sha256 } from "@noble/hashes/sha256";
 import { toHex } from "viem";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
-import SP1PayABI from "../abi/SP1Pay.json";
+import SP1PayABI from "../abi/SP1Pay";
 interface ProveProps {
   disabled: boolean;
   email: string | null;
@@ -23,10 +23,10 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
     address: bonsaiPayAddress,
     abi: SP1PayABI,
     functionName: "claim",
-    args: [proof, publicValues],
+    args: [proof ? `${proof}` : null, publicValues ? `${publicValues}` : null],
   });
 
-  const { write } = useContractWrite(config);
+  const { data, isLoading: isTxLoading , isSuccess, write } = useContractWrite(config);
   useBonsaiPayClaimedEvent({
     listener: () => {
       setIsClaimed(true);
@@ -71,7 +71,9 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
         const data = await response.json();
         setProof(data.proof);
         setPublicValues(data.publicValues);
-        write();
+        console.log(data.proof);
+        console.log(data.publicValues);
+        write?.();
       } else {
         throw new Error("Response not OK");
       }

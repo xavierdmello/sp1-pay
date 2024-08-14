@@ -93,9 +93,9 @@ pub async fn prove(token: String) -> Result<Value, Error> {
     } else {
         proof.bytes()
     };
-
+    
     Ok(json!({
-        "proof": hex::encode(proof_bytes),
-        "publicValues": hex::encode(proof.public_values.to_vec())
+        "proof": format!("0x{}", hex::encode(proof_bytes)),
+        "publicValues": format!("0x{}", hex::encode(proof.public_values.to_vec()))
     }))
 }
