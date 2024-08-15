@@ -39,6 +39,8 @@ const Prove: React.FC<ProveProps> = ({ disabled, email }) => {
   } = useContractWrite(config);
 
   useEffect(() => {
+    console.log("Proof: ", proof);
+    console.log("Public Values: ", publicValues);
     if (proof && publicValues) {
       write?.();
     }

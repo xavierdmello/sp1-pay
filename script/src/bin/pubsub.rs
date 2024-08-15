@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::path::PathBuf;
+
 
 use alloy_primitives::{Address, Bytes, FixedBytes, B256, U256};
 use alloy_sol_types::{sol, SolInterface, SolType, SolValue};

@@ -34,9 +34,10 @@ contract BonsaiPayTest is Test {
         // Parse and decode individual fields
         fixture.msgSender = abi.decode(vm.parseJson(fixtureJson, ".msgSender"), (address));
         fixture.claimId = abi.decode(vm.parseJson(fixtureJson, ".claimId"), (bytes32));
-        fixture.vkey = abi.decode(vm.parseJson(fixtureJson, ".vkey"), (bytes32));
+        fixture.vkey = vm.envBytes32("SP1_PAY_PROGRAM_VKEY");
         fixture.publicValues = abi.decode(vm.parseJson(fixtureJson, ".publicValues"), (bytes));
         fixture.proof = abi.decode(vm.parseJson(fixtureJson, ".proof"), (bytes));
+        fixture.cert = vm.envBytes("CERT");
 
         // Deploy BonsaiPay
         bonsaiPay = new BonsaiPay(ISP1Verifier(address(mockVerifier)), fixture.vkey, fixture.cert);

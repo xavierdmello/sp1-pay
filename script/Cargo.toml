@@ -24,6 +24,7 @@ warp = { workspace = true }
 ethers = { workspace = true }
 common = { workspace = true }
 reqwest = { version = "0.12.5", features = ["json"] }
+sp1-helper = { workspace = true }
 
 [build-dependencies]
 sp1-helper = { workspace = true }

@@ -12,23 +12,13 @@ use dotenv::dotenv;
 use reqwest::get;
 use std::str::FromStr;
 use serde_json::Value;
-
+use ui::ProofInputs;
+use ui::ProofOutputs;
 sol! {
     interface IBonsaiPay {
         function claim(bytes calldata proof, bytes calldata publicValues);
     }
 }
-
-#[derive(Serialize, Deserialize)]
-pub struct ProofInputs {
-    pub identity_provider: U256,
-    pub jwt: String,
-    pub cert: Bytes,
-}
-
-pub type ProofOutputs = sol! {
-    tuple(address, bytes32, bytes)
-};
 
 pub const ELF: &[u8] = include_bytes!("../../elf/riscv32im-succinct-zkvm-elf");
 
@@ -91,3 +81,4 @@ pub async fn fetch_google_jwt_cert() -> Result<Bytes, Box<dyn std::error::Error>
 
     Ok(bytes)
 }
+

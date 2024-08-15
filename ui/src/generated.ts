@@ -138,7 +138,7 @@ export const bonsaiPayABI = [
  * [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x834f362A264714cB876334C997aEFEb3FE581Ff5)
  */
 export const bonsaiPayAddress = {
-  11155111: "0x1d109030db5805607662044E1FaA804FC1169961",
+  11155111: "0x59E84c71f2356Cb7e704dCc0088821dEd1c36d93",
 } as const;
 
 /**
